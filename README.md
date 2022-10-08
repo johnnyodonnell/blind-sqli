@@ -23,3 +23,8 @@ machine that contains a SQLi vulnerability.
 
 This tool will be written in Racket, my favorite programming language.
 
+### Limitations
+
+* Only works for error-based blind SQL injection
+* Only works on MySQL databases
+
