@@ -6,20 +6,40 @@
 
 
 (define run
-  (lambda (action http-method host path success-regex post-data database table)
+  (lambda (action
+            http-method
+            host
+            path
+            data-format-string
+            success-regex
+            database
+            table)
+    (displayln (format "Action: ~a" action))
+    (displayln (format "HTTP Method: ~a" http-method))
+    (displayln (format "Host: ~a" host))
+    (displayln (format "Path: ~a" path))
+    (displayln (format "Data format string: ~a" data-format-string))
+    (displayln (format "Success regex: ~a" success-regex))
+    (displayln (format "Database: ~a" database))
+    (displayln (format "Table: ~a" table))
+    (displayln "")
+    (displayln "--- Executing Action ---")
+    (flush-output)
     (let ([request-generator
             (create-request-generator
               http-method
               host
               path
-              success-regex
-              post-data)])
+              data-format-string
+              success-regex)])
       (cond
         [(equal? (string-downcase action) "dump-table")
          (dump-table request-generator database table)]
         [else
-          (displayln
-            "The requested action is not supported at this time.")]))))
+          (begin
+            (displayln
+              "The requested action is not supported at this time.")
+            (exit))]))))
 
 (define main
   (lambda ()
@@ -29,9 +49,6 @@
     (command-line
       #:program "blind-sql"
       #:once-each
-      [("-p" "--formatted-post-data") pd
-                            "Specify formatted post data"
-                            (post-data pd)]
       [("-d" "--database") db 
                             "Specify database"
                             (database db)]
@@ -41,15 +58,16 @@
       #:args (action
                http-method
                host
-               formatted-path
+               path
+               data-format-string
                success-regex)
       (run
         action
         http-method
         host
-        formatted-path
+        path
+        data-format-string
         success-regex
-        (post-data)
         (database)
         (table)))))
 
