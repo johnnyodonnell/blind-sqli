@@ -10,6 +10,7 @@
   (lambda (response [first-iter #t])
     (let ([line (read-line response 'any)])
       (cond
+        [(and first-iter (eof-object? line)) ""]
         [(eof-object? line) '()]
         [first-iter
           (string-join
