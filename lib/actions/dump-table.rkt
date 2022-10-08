@@ -4,6 +4,6 @@
 
 
 (define dump-table
-  (lambda (request-generator)
+  (lambda (request-generator database table)
     (displayln "Dumping table")))
 

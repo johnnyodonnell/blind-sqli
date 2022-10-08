@@ -2,24 +2,36 @@
 
 (require racket/cmdline)
 (require "lib/actions/dump-table.rkt")
+(require "lib/request-generator-factory.rkt")
 
 
 (define run
-  (lambda (action url http-method database table)
-    (cond
-      [(equal? action "dump-table")
-       (dump-table
-         (lambda () #t))]
-      [else
-        (displayln "The requested action is not supported at this time.")])))
+  (lambda (action http-method host path success-regex post-data database table)
+    (let ([request-generator
+            (create-request-generator
+              http-method
+              host
+              path
+              success-regex
+              post-data)])
+      (cond
+        [(equal? (string-downcase action) "dump-table")
+         (dump-table request-generator database table)]
+        [else
+          (displayln
+            "The requested action is not supported at this time.")]))))
 
 (define main
   (lambda ()
+    (define post-data (make-parameter #f))
     (define database (make-parameter #f))
     (define table (make-parameter #f))
     (command-line
       #:program "blind-sql"
       #:once-each
+      [("-p" "--formatted-post-data") pd
+                            "Specify formatted post data"
+                            (post-data pd)]
       [("-d" "--database") db 
                             "Specify database"
                             (database db)]
@@ -27,9 +39,19 @@
                          "Specify table"
                          (table tbl)]
       #:args (action
-               url
-               http-method)
-      (run action url http-method (database) (table)))))
+               http-method
+               host
+               formatted-path
+               success-regex)
+      (run
+        action
+        http-method
+        host
+        formatted-path
+        success-regex
+        (post-data)
+        (database)
+        (table)))))
 
 (main)
 

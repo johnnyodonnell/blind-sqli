@@ -28,3 +28,9 @@ This tool will be written in Racket, my favorite programming language.
 * Only works for error-based blind SQL injection
 * Only works on MySQL databases
 
+### Other Notes
+
+* Heavily inspired by the SQLi scripts I wrote for 10.1.1.246
+    from the OSCP labs.
+    Private repository link: https://github.com/johnnyodonnell/notes-on-oscp-lab-machines/tree/master/10.1.1.246
+
