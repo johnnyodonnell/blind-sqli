@@ -13,13 +13,13 @@ For a lab machine that I hacked in preparation for the OSCP exam,
 I wrote custom blind SQL injection scripts that amounted to nearly
 500 lines of code. These scripts listed all of the databases in
 the server, listed all of the tables for a given database, and
-dumped the contents of a table.
+dumped the contents of a given table.
 
 Now that I am working towards my OSWE, I have decided to write my
 own blind SQL injection tool in order to (1) prove that I understand
 how blind SQL injection actually works and to (2) save myself
 the time and effort of writing custom scripts for each individual
-machine that contians a SQLi vulnerability.
+machine that contains a SQLi vulnerability.
 
 This tool will be written in Racket, my favorite programming language.
 
