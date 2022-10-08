@@ -28,15 +28,32 @@
       enc-query)))
 
 (define did-query-succeed?
-  (lambda (str-response success-regex [print #f])
-    (not
-      (not
-        (regexp-match
-          (regexp success-regex)
-          str-response)))))
+  (lambda (str-response success-regex fail-regex [print #f])
+    (cond
+      [success-regex
+        (not
+          (not
+            (regexp-match
+              (regexp success-regex)
+              str-response)))]
+      [fail-regex
+        (not
+          (regexp-match
+            (regexp fail-regex)
+            str-response))]
+      [else
+        (begin
+          (display "Either success regex or fail regex must be defined")
+          (exit))])))
 
 (define create-request-generator
-  (lambda (http-method host path data-format-string success-regex [print #f])
+  (lambda (http-method
+            host
+            path
+            data-format-string
+            success-regex
+            fail-regex
+            [print #f])
      (cond
        [(equal? (string-downcase http-method) "get")
         (lambda (query)
@@ -52,6 +69,7 @@
             (did-query-succeed?
               (read-response response)
               success-regex
+              fail-regex
               print)))]
        [(equal? (string-downcase http-method) "post")
         (lambda (query)
@@ -66,6 +84,7 @@
             (did-query-succeed?
               (read-response response)
               success-regex
+              fail-regex
               print)))]
        [else
          (begin
