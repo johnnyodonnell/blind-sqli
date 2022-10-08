@@ -221,6 +221,9 @@
                  col-name
                  row-num
                  name-len
+                 request-generator
+                 database
+                 table
                  (add1 name-index-iter)))
              "")
            (cons
@@ -258,7 +261,10 @@
               (sub1 row-num)
               request-generator
               database
-              table))
+              table)
+            request-generator
+            database
+            table)
           (get-row
             row-num
             (cdr columns)
