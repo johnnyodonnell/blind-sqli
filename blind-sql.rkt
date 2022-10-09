@@ -2,7 +2,7 @@
 
 (require racket/cmdline)
 (require "lib/actions/dump-table.rkt")
-(require "lib/request-generator-factory.rkt")
+(require "lib/requests/request-generator-factory.rkt")
 
 
 (define run
@@ -11,6 +11,7 @@
             host
             path
             data-format-string
+            headers
             success-regex
             fail-regex
             database
@@ -20,6 +21,7 @@
     (displayln (format "Host: ~a" host))
     (displayln (format "Path: ~a" path))
     (displayln (format "Data format string: ~a" data-format-string))
+    (displayln (format "Headers: ~a" headers))
     (displayln (format "Success regex: ~a" success-regex))
     (displayln (format "Fail regex: ~a" fail-regex))
     (displayln (format "Database: ~a" database))
@@ -45,6 +47,7 @@
                     host
                     path
                     data-format-string
+                    headers
                     success-regex
                     fail-regex)])
             (cond
@@ -62,6 +65,7 @@
     (define fail-regex (make-parameter #f))
     (define database (make-parameter #f))
     (define table (make-parameter #f))
+    (define headers (make-parameter '()))
     (command-line
       #:program "blind-sql"
       #:once-each
@@ -77,6 +81,10 @@
       [("-t" "--table") tbl
                          "Specify table"
                          (table tbl)]
+      #:multi
+      [("-H" "--header") hdr
+                         "Specify HTTP headers"
+                         (headers (cons hdr (headers)))]
       #:args (action
                http-method
                host
@@ -88,6 +96,7 @@
         host
         path
         data-format-string
+        (headers)
         (success-regex)
         (fail-regex)
         (database)

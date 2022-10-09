@@ -2,9 +2,12 @@
 
 (require net/http-client)
 (require net/uri-codec)
+(require "dynamic-scripts.rkt")
 
 (provide create-request-generator)
 
+
+(define data-format-string-getter (make-parameter #f))
 
 (define read-response
   (lambda (response [first-iter #t])
@@ -47,11 +50,36 @@
           (display "Either success regex or fail regex must be defined")
           (exit))])))
 
+(define process-data-format-string
+  (lambda (data-format-string host)
+    (cond
+      [(equal?
+         (data-format-string-getter)
+         'not-used)
+       data-format-string]
+      [(procedure?
+         (data-format-string-getter))
+       ((data-format-string-getter) host)]
+      [(is-dynamic-script? data-format-string)
+       (begin
+         (data-format-string-getter
+           (get-dynamic-script data-format-string))
+         (process-data-format-string
+           data-format-string
+           host))]
+      [else
+        (begin
+          (data-format-string-getter 'not-used)
+          (process-data-format-string
+            data-format-string
+            host))])))
+
 (define create-request-generator
   (lambda (http-method
             host
             path
             data-format-string
+            headers
             success-regex
             fail-regex
             [print #f])
@@ -65,8 +93,13 @@
                             path
                             "?"
                             (encode-query
-                              (format data-format-string query) 
-                              print)))])
+                              (format
+                                (process-data-format-string
+                                  data-format-string
+                                  host)
+                                query)
+                              print))
+                          #:headers headers)])
             (did-query-succeed?
               (read-response response)
               success-regex
@@ -78,9 +111,14 @@
                         (http-sendrecv
                           host
                           path
+                          #:headers headers
                           #:method "POST"
                           #:data (encode-query
-                                   (format data-format-string query)
+                                   (format
+                                     (process-data-format-string
+                                       data-format-string
+                                       host)
+                                     query)
                                    print))])
             (did-query-succeed?
               (read-response response)
