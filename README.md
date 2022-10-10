@@ -37,7 +37,7 @@ script:<path to Racket script>
 
 This type of functionality can be replicated in 'sqlmap' with
 something similar to the approach mentioned
-[here](https://stackoverflow.com/a/61475928/5832619)
+[here](https://stackoverflow.com/a/61475928/5832619).
 
 ### Limitations
 
